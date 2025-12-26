@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Couleurs de base -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Charte Graphique Médicale -->
+    <color name="fond_ecran">#F5F7FA</color> <!-- Gris très clair -->
+    <color name="texte_principal">#0D47A1</color> <!-- Bleu marine foncé -->
+    <color name="bleu_medical">#2196F3</color> <!-- Bleu boutons -->
+    
+    <!-- Couleurs par Rôle -->
+    <color name="admin_gris">#757575</color>
+    <color name="docteur_vert">#4CAF50</color>
+    <color name="patient_bleu">#2196F3</color>
+    
+    <!-- Autres -->
+    <color name="texte_blanc">#FFFFFF</color>
+    <color name="gris_indice">#9E9E9E</color>
+</resources>

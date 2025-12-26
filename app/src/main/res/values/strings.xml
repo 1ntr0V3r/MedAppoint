@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">MedAppoint</string>
+    
+    <!-- General -->
+    <string name="btn_login">Se connecter</string>
+    <string name="btn_register">S\'inscrire</string>
+    <string name="loading_login">Connexion en cours...</string>
+    <string name="loading_register">Création du compte...</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Mot de passe</string>
+    <string name="hint_fullname">Nom complet</string>
+    <string name="label_role">Rôle</string>
+    <string name="you_are">Vous êtes :</string>
+    
+    <!-- Login Screen -->
+    <string name="title_login">Connexion</string>
+    <string name="subtitle_login">Connectez-vous à votre espace santé</string>
+    <string name="welcome_login">Bienvenue</string>
+    <string name="link_register">Pas encore de compte ? S\'inscrire</string>
+    <string name="tagline">Votre santé, notre priorité</string>
+    <string name="hint_email_login">Votre adresse email</string>
+    <string name="hint_password_login">Votre mot de passe</string>
+    
+    <!-- Register Screen -->
+    <string name="title_register">Créer un compte</string>
+    <string name="subtitle_register">Rejoignez MedAppoint</string>
+    <string name="hint_fullname_register">Nom et Prénom</string>
+    <string name="success_register">Compte créé avec succès ! Connectez-vous.</string>
+    <string name="error_register">Désolé, l\'inscription a échoué.</string>
+    
+    <!-- Admin Dashboard -->
+    <string name="title_admin">Espace Administrateur</string>
+    <string name="subtitle_admin">Gérez les utilisateurs et les accès</string>
+    <string name="error_loading_users">Impossible de récupérer les utilisateurs.</string>
+    <string name="admin_dashboard">Admin Dashboard</string>
+    
+    <!-- Doctor Dashboard -->
+    <string name="title_doctor">Espace Médecin</string>
+    <string name="subtitle_doctor">Consultez votre planning du jour</string>
+    <string name="error_loading_planning">Erreur lors du chargement du planning.</string>
+    <string name="doctor_planning">Mon Planning</string>
+    
+    <!-- Patient Dashboard -->
+    <string name="title_patient">Espace Patient</string>
+    <string name="subtitle_patient">Vos prochains rendez-vous</string>
+    <string name="error_loading_rdv">Erreur chargement RDV</string>
+    <string name="patient_appointments">Mes Rendez-vous</string>
+    
+    <!-- Errors & Toasts -->
+    <string name="error_email_required">L\'email est obligatoire</string>
+    <string name="error_password_required">Le mot de passe est obligatoire</string>
+    <string name="error_password_length">Minimum 6 caractères pour le mot de passe</string>
+    <string name="error_email_invalid">L\'adresse email n\'est pas valide</string>
+    <string name="error_role_unknown">Rôle inconnu : </string>
+    <string name="error_network">Le serveur ne répond pas. Vérifiez votre Wi-Fi.</string>
+    <string name="error_login_failed">Email ou mot de passe incorrect.</string>
+    <string name="error_name_required">Le nom est obligatoire</string>
+    
+    <!-- Items / Lists -->
+    <string name="dummy_time">09:00</string>
+    <string name="dummy_date">2024-12-20</string>
+    <string name="dummy_patient">Nom du Patient</string>
+    <string name="dummy_doctor">Dr. Ahmed Benali</string>
+    <string name="dummy_reason">Consultation générale</string>
+    <string name="dummy_status">Terminé</string>
+    <string name="dummy_email">email@example.com</string>
+    <string name="dummy_role">ROLE</string>
+</resources>
