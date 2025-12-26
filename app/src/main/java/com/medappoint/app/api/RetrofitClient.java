@@ -6,7 +6,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitClient {
     // Pour l'émulateur Android, on utilise 10.0.2.2 qui pointe vers le localhost de votre PC.
     // Si vous testez sur un VRAI téléphone (Samsung, Xiaomi...), remplacez par l'IP locale de votre PC (ex: "http://192.168.1.15:8080/")
-    private static final String ADRESSE_SERVEUR = "http://10.0.2.2:8080/";
+    // IP locale pour test sur téléphone réel (selon votre config ipconfig)
+    private static final String ADRESSE_SERVEUR = "http://26.10.0.108:8080/";
     
     private static RetrofitClient instance_unique = null;
     private ApiService serviceApi;
