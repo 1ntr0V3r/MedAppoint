@@ -9,63 +9,53 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
     
-    // --- EXPLICATION ---
-    // Ce contrôleur gère l'inscription et la connexion des utilisateurs.
-    // C'est comme le portier de l'immeuble qui vérifie l'identité des gens.
+    // Injection du Repository pour parler à la Base de Données
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.medappoint.backend.repositories.UserRepository userRepository;
 
-    @PostMapping("/register") // Quand l'application envoie une requête POST sur /register
-    public ResponseEntity<User> inscription(@RequestBody RegisterRequest demandeInscription) {
+    @PostMapping("/register") 
+    public ResponseEntity<?> inscription(@RequestBody RegisterRequest demandeInscription) {
         
-        // 1. On crée le nouvel utilisateur
+        // 1. Vérifier si l'email existe déjà en base
+        if (userRepository.findByEmail(demandeInscription.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest()
+                    .body(new ReponseErreur("Cet email est déjà utilisé !"));
+        }
+
+        // 2. Créer le nouvel utilisateur
         User nouvelUtilisateur = new User();
-        nouvelUtilisateur.setId(System.currentTimeMillis()); // On génère un ID unique avec l'heure
         nouvelUtilisateur.setFullName(demandeInscription.getFullName());
         nouvelUtilisateur.setEmail(demandeInscription.getEmail());
+        nouvelUtilisateur.setPassword(demandeInscription.getPassword()); // Attention : Pas de hashage demandé pour l'instant
         nouvelUtilisateur.setRole(demandeInscription.getRole());
         
-        // 2. Dans une vraie application, on ferait 'userRepository.save(nouvelUtilisateur)'
-        // Ici, on le renvoie juste au mobile pour dire "C'est bon, j'ai bien reçu !"
-        return ResponseEntity.ok(nouvelUtilisateur);
+        // 3. Sauvegarder dans la base de données PostgreSQL
+        User utilisateurSauvegarde = userRepository.save(nouvelUtilisateur);
+        
+        return ResponseEntity.ok(utilisateurSauvegarde);
     }
 
-    @PostMapping("/login") // Quand l'application envoie une requête POST sur /login
+    @PostMapping("/login") 
     public ResponseEntity<?> connexion(@RequestBody LoginRequest demandeConnexion) {
         String email = demandeConnexion.getEmail();
         String motDePasse = demandeConnexion.getPassword();
         
-        // 1. Vérification de base (Est-ce que les champs sont remplis ?)
-        if (email == null || motDePasse == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ReponseErreur("Il manque l'email ou le mot de passe !"));
-        }
+        // 1. Chercher l'utilisateur dans la base par son email
+        // .orElse(null) retourne null si l'utilisateur n'est pas trouvé
+        User utilisateur = userRepository.findByEmail(email).orElse(null);
         
-        // 2. Logique SIMPLIFIÉE pour le test (pas de base de données complexe ici)
-        // On vérifie juste si c'est les comptes de test prévus
-        
-        if ("admin@test.com".equals(email)) {
-            // C'est l'Admin !
-            User admin = new User(1L, "Admin System", email, "ADMIN");
-            return ResponseEntity.ok(admin);
-            
-        } else if ("doctor@test.com".equals(email)) {
-            // C'est le Docteur !
-            User docteur = new User(2L, "Dr. Ahmed Benali", email, "DOCTOR");
-            return ResponseEntity.ok(docteur);
-            
-        } else if ("patient@test.com".equals(email)) { // Ajout du cas Patient
-            // C'est un Patient !
-            User patient = new User(3L, "Patient Test", email, "PATIENT");
-            return ResponseEntity.ok(patient);
-            
+        // 2. Vérifier si l'utilisateur existe ET si le mot de passe correspond
+        if (utilisateur != null && utilisateur.getPassword().equals(motDePasse)) {
+            // C'est bon ! On renvoie l'utilisateur (avec son ID et son Rôle)
+            return ResponseEntity.ok(utilisateur);
         } else {
-            // 3. Si on ne connait pas cet email
+            // Mauvais identifiants
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ReponseErreur("Email inconnu ou mot de passe incorrect."));
         }
     }
 
     // --- classes utilitaires pour recevoir les données JSON ---
-    // Elles servent juste à "porter" les données du mobile vers ici.
 
     static class RegisterRequest {
         private String fullName;
@@ -73,7 +63,6 @@ public class AuthController {
         private String password;
         private String role; // ADMIN, DOCTOR, PATIENT
 
-        // Getters et Setters (nécessaires pour que Spring Boot lise le JSON)
         public String getFullName() { return fullName; }
         public void setFullName(String fullName) { this.fullName = fullName; }
         public String getEmail() { return email; }

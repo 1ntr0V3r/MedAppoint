@@ -12,16 +12,14 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminController {
 
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.medappoint.backend.repositories.UserRepository userRepository;
+
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        // Liste codée en dur avec 3 utilisateurs fictifs
-        List<User> users = new ArrayList<>();
-        
-        users.add(new User(1L, "Dr. Ahmed Benali", "ahmed.benali@medappoint.com", "DOCTOR"));
-        users.add(new User(2L, "Fatima Alami", "fatima.alami@medappoint.com", "PATIENT"));
-        users.add(new User(3L, "Admin System", "admin@medappoint.com", "ADMIN"));
-        
-        return users;
+        // Cette méthode récupère la liste complète des utilisateurs depuis la base de données
+        // SELECT * FROM users;
+        return userRepository.findAll();
     }
 }
 

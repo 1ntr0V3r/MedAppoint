@@ -1,36 +1,53 @@
-package com.medappoint.backend.models;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "appointments")
 public class Appointment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
     private String date;
     private String time;
     private String reason;
+    
+    // ID du patient qui a pris ce rendez-vous (lien vers la table users)
+    private Long patientId;
+    
+    // Nom du patient (pour affichage facile sans jointure complexe)
     private String patientName;
+    
+    // ID du médecin concerné (lien vers la table users)
     private Long doctorId;
+    
+    // Nom du médecin (pour affichage facile)
     private String doctorName;
+    
     private String status;
 
-    // Constructeur par défaut
+    // Constructeur par défaut (pour JPA)
     public Appointment() {
     }
 
-    // Constructeur avec paramètres
-    public Appointment(Long id, String date, String time, String reason, String patientName, Long doctorId) {
+    // Constructeur simple
+    public Appointment(Long id, String date, String time, String reason, String patientName, Long patientId, Long doctorId) {
         this.id = id;
         this.date = date;
         this.time = time;
         this.reason = reason;
         this.patientName = patientName;
+        this.patientId = patientId;
         this.doctorId = doctorId;
     }
 
-    // Constructeur complet avec doctorName et status
-    public Appointment(Long id, String date, String time, String reason, String patientName, Long doctorId, String doctorName, String status) {
+    // Constructeur complet
+    public Appointment(Long id, String date, String time, String reason, String patientName, Long patientId, Long doctorId, String doctorName, String status) {
         this.id = id;
         this.date = date;
         this.time = time;
         this.reason = reason;
         this.patientName = patientName;
+        this.patientId = patientId;
         this.doctorId = doctorId;
         this.doctorName = doctorName;
         this.status = status;
@@ -67,6 +84,14 @@ public class Appointment {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 
     public String getPatientName() {
