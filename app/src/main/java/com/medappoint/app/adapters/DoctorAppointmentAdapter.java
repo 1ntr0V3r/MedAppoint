@@ -29,14 +29,38 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
     }
 
     // Mise à jour de la vue avec les infos du RDV
+    // Mise à jour de la vue avec les infos du RDV
     @Override
     public void onBindViewHolder(@NonNull VueRendezVousHolder holder, int position) {
         Appointment leRendezVous = listeRendezVous.get(position);
         
-        holder.textePatient.setText(leRendezVous.getPatientName());
+        String infoPatient = leRendezVous.getPatientName() + ", " + 
+                             leRendezVous.getPatientAge() + " ans, " + 
+                             leRendezVous.getPatientSex();
+        
+        holder.textePatient.setText(infoPatient);
         holder.texteHeure.setText(leRendezVous.getTime());
         holder.texteMotif.setText(leRendezVous.getReason());
         holder.texteDate.setText(leRendezVous.getDate());
+        
+        holder.btnComplete.setOnClickListener(v -> {
+             com.medappoint.app.api.ApiService api = com.medappoint.app.api.RetrofitClient.getInstance(v.getContext()).getApiService();
+             api.completeAppointment(leRendezVous.getId()).enqueue(new retrofit2.Callback<Void>() {
+                 @Override
+                 public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                     if (response.isSuccessful()) {
+                         android.widget.Toast.makeText(v.getContext(), "Consultation terminée", android.widget.Toast.LENGTH_SHORT).show();
+                         listeRendezVous.remove(position);
+                         notifyItemRemoved(position);
+                         notifyItemRangeChanged(position, listeRendezVous.size());
+                     }
+                 }
+                 @Override
+                 public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                      android.widget.Toast.makeText(v.getContext(), "Erreur réseau", android.widget.Toast.LENGTH_SHORT).show();
+                 }
+             });
+        });
     }
 
     @Override
@@ -55,6 +79,7 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
         TextView texteHeure;
         TextView texteMotif;
         TextView texteDate;
+        android.widget.Button btnComplete;
 
         VueRendezVousHolder(@NonNull View itemView) {
             super(itemView);
@@ -62,6 +87,7 @@ public class DoctorAppointmentAdapter extends RecyclerView.Adapter<DoctorAppoint
             texteHeure = itemView.findViewById(R.id.textViewTime);
             texteMotif = itemView.findViewById(R.id.textViewReason);
             texteDate = itemView.findViewById(R.id.textViewDate);
+            btnComplete = itemView.findViewById(R.id.btnComplete);
         }
     }
 }

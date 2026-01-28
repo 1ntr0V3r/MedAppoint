@@ -1,12 +1,16 @@
 package com.medappoint.app.models;
 
-public class Appointment {
+import java.io.Serializable;
+
+public class Appointment implements Serializable {
     private Long id;
     private String date;
     private String time;
     private String reason;
     private Long patientId;
     private String patientName;
+    private Integer patientAge;
+    private String patientSex;
     private Long doctorId;
     private String doctorName;
     private String status;
@@ -107,6 +111,22 @@ public class Appointment {
 
     public void setPatientId(Long patientId) {
         this.patientId = patientId;
+    }
+
+    public Integer getPatientAge() {
+        return patientAge;
+    }
+
+    public void setPatientAge(Integer patientAge) {
+        this.patientAge = patientAge;
+    }
+
+    public String getPatientSex() {
+        return patientSex;
+    }
+
+    public void setPatientSex(String patientSex) {
+        this.patientSex = patientSex;
     }
 }
 

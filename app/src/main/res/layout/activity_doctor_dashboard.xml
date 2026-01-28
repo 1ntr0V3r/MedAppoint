@@ -37,6 +37,19 @@
         app:layout_constraintStart_toStartOf="@+id/titreDocteur"
         app:layout_constraintTop_toBottomOf="@+id/titreDocteur" />
 
+    <TextView
+        android:id="@+id/tvPlanningHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:background="#E8F5E9"
+        android:text="Planning du : -- / -- Patients"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#2E7D32"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/enteteDocteur"/>
+
     <!-- Liste des rendez-vous -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/listeRendezVous"
@@ -45,7 +58,7 @@
         android:layout_marginTop="16dp"
         android:padding="16dp"
         android:clipToPadding="false"
-        app:layout_constraintTop_toBottomOf="@+id/enteteDocteur"
+        app:layout_constraintTop_toBottomOf="@+id/tvPlanningHeader"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_doctor_appointment" />
 

@@ -116,8 +116,22 @@ public class RegisterActivity extends AppCompatActivity {
                     // On ferme cette page pour revenir à la connexion
                     finish();
                 } else {
+                    String errorMsg = getString(R.string.error_register);
+                    try {
+                        if (reponse.errorBody() != null) {
+                             // Basic attempt to read error info. Ideally parse JSON.
+                             // But server sends {"message": "Cet email est déjà utilisé !"}
+                             String errContent = reponse.errorBody().string();
+                             if (errContent.contains("Cet email est déjà utilisé")) {
+                                 errorMsg = "Cet email est déjà utilisé !";
+                             }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
                     Toast.makeText(RegisterActivity.this,
-                            getString(R.string.error_register),
+                            errorMsg,
                             Toast.LENGTH_SHORT).show();
                 }
             }

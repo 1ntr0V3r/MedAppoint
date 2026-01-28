@@ -22,6 +22,9 @@ public class User {
     
     // Le rôle : ADMIN, DOCTOR, ou PATIENT
     private String role;
+    
+    private Integer age;
+    private String sex; // "M" or "F"
 
     // Constructeur par défaut (nécessaire pour JPA)
     public User() {
@@ -75,6 +78,22 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 }
 

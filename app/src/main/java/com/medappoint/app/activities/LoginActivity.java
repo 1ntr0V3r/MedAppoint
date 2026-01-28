@@ -180,7 +180,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // On passe les infos importantes à la page suivante
-        intent.putExtra("idUtilisateur", utilisateur.getId());
+        intent.putExtra("USER_ID", utilisateur.getId());
+        intent.putExtra("USER_NAME", utilisateur.getFullName());
         intent.putExtra("roleUtilisateur", utilisateur.getRole());
         intent.putExtra("emailUtilisateur", utilisateur.getEmail());
         

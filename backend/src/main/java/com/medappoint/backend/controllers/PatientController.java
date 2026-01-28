@@ -31,9 +31,12 @@ public class PatientController {
     
     @org.springframework.web.bind.annotation.PostMapping("/book")
     public Appointment bookAppointment(@org.springframework.web.bind.annotation.RequestBody Appointment appointment) {
-        // Logique simple pour l'instant : on sauvegarde directement
-        // Idéalement, on vérifierait si le créneau est libre
+        // Le patient soumet une demande SANS docteur.
+        // On met le statut EN ATTENTE (PENDING)
         appointment.setStatus("PENDING");
+        appointment.setDoctorId(null); // Force null au cas où
+        appointment.setDoctorName(null);
+        
         return appointmentRepository.save(appointment);
     }
 }

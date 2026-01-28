@@ -18,9 +18,28 @@ public class DoctorController {
 
     @GetMapping("/appointments/{doctorId}")
     public List<Appointment> getDoctorAppointments(@PathVariable Long doctorId) {
-        // Cette méthode va chercher dans la base de données tous les rendez-vous
-        // associés à l'ID du médecin fourni.
-        return appointmentRepository.findByDoctorId(doctorId);
+        List<Appointment> allAppointments = appointmentRepository.findByDoctorIdOrderByTimeAsc(doctorId);
+        List<Appointment> filtered = new ArrayList<>();
+        
+        // Planning: 09h00 - 16h00 uniquement ET Status CONFIRMED
+        for (Appointment app : allAppointments) {
+            String t = app.getTime();
+            if (t != null && t.compareTo("09:00") >= 0 && t.compareTo("16:00") <= 0) {
+                 if ("CONFIRMED".equals(app.getStatus())) {
+                     filtered.add(app);
+                 }
+            }
+        }
+        return filtered;
+    }
+
+    @org.springframework.web.bind.annotation.PutMapping("/appointments/{id}/complete")
+    public void completeAppointment(@PathVariable Long id) {
+        Appointment app = appointmentRepository.findById(id).orElse(null);
+        if (app != null) {
+            app.setStatus("COMPLETED");
+            appointmentRepository.save(app);
+        }
     }
 }
 

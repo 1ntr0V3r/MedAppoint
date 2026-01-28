@@ -28,6 +28,13 @@ public class PatientDashboardActivity extends AppCompatActivity {
 
         // Liaison
         listeRendezVous = findViewById(R.id.listeRendezVous);
+        android.widget.TextView titrePatient = findViewById(R.id.titrePatient);
+        
+        String userName = getIntent().getStringExtra("USER_NAME");
+        if (userName != null) {
+            titrePatient.setText("Bonjour " + userName);
+        }
+
         mesRendezVous = new ArrayList<>();
         
         // Configuration de la liste

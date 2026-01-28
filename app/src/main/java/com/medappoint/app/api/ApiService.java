@@ -32,5 +32,14 @@ public interface ApiService {
 
     @POST("api/patient/book")
     Call<Appointment> bookAppointment(@Body Appointment appointment);
+
+    @retrofit2.http.PUT("api/doctor/appointments/{id}/complete")
+    Call<Void> completeAppointment(@Path("id") Long id);
+
+    @GET("api/admin/appointments/pending")
+    Call<List<Appointment>> getPendingAppointments();
+
+    @retrofit2.http.PUT("api/admin/appointments/{id}/assign")
+    Call<Void> assignDoctor(@Path("id") Long appointmentId, @retrofit2.http.Query("doctorId") Long doctorId);
 }
 

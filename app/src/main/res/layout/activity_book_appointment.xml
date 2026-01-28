@@ -18,14 +18,27 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Médecin:"
+        android:text="Age:"
         android:layout_marginBottom="4dp"/>
-    
-    <Spinner
-        android:id="@+id/spinnerDoctors"
+    <EditText
+        android:id="@+id/inputAge"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#E0E0E0"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:hint="Ex: 25"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sexe (M/F):"
+        android:layout_marginBottom="4dp"/>
+    <EditText
+        android:id="@+id/inputSex"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="M ou F"
+        android:maxLength="1"
         android:layout_marginBottom="16dp"/>
 
     <TextView

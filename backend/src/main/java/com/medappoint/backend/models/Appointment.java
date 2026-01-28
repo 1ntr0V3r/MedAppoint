@@ -19,6 +19,10 @@ public class Appointment {
     // Nom du patient (pour affichage facile sans jointure complexe)
     private String patientName;
     
+    private Integer patientAge;
+    
+    private String patientSex; // "M" ou "F"
+    
     // ID du médecin concerné (lien vers la table users)
     private Long doctorId;
     
@@ -126,6 +130,22 @@ public class Appointment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Integer getPatientAge() {
+        return patientAge;
+    }
+
+    public void setPatientAge(Integer patientAge) {
+        this.patientAge = patientAge;
+    }
+
+    public String getPatientSex() {
+        return patientSex;
+    }
+
+    public void setPatientSex(String patientSex) {
+        this.patientSex = patientSex;
     }
 }
 

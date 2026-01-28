@@ -58,6 +58,14 @@
             android:textSize="12sp"
             android:textColor="@color/docteur_vert"
             android:layout_marginTop="8dp" />
+            
+        <Button
+            android:id="@+id/btnComplete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Terminer la consultation"
+            android:backgroundTint="#4CAF50"
+            android:layout_marginTop="8dp"/>
 
     </LinearLayout>
 

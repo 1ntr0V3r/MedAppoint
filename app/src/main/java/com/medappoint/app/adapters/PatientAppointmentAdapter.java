@@ -31,18 +31,24 @@ public class PatientAppointmentAdapter extends RecyclerView.Adapter<PatientAppoi
         
         holder.texteDate.setText(rdv.getDate());
         holder.texteHeure.setText(rdv.getTime());
-        holder.texteDocteur.setText(rdv.getDoctorName());
         holder.texteMotif.setText(rdv.getReason());
-        
         // Gestion du statut (Couleurs dynamiques)
-        String statut = rdv.getStatus();
+        String statut = rdv.getStatus(); // "PENDING", "CONFIRMED"
         holder.texteStatut.setText(statut);
         
-        if ("Terminé".equals(statut)) {
-            holder.texteStatut.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_green_dark));
-        } else if ("À venir".equals(statut)) {
-            holder.texteStatut.setTextColor(holder.itemView.getContext().getResources().getColor(android.R.color.holo_blue_dark));
+        if ("CONFIRMED".equalsIgnoreCase(statut)) {
+            holder.texteStatut.setTextColor(android.graphics.Color.GREEN);
+            holder.texteDocteur.setText("Dr. " + rdv.getDoctorName());
+        } else {
+            holder.texteStatut.setTextColor(android.graphics.Color.parseColor("#FF9800")); // Orange
+            holder.texteDocteur.setText("En attente d'attribution");
         }
+
+        holder.itemView.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(v.getContext(), com.medappoint.app.activities.AppointmentDetailActivity.class);
+            intent.putExtra("APPOINTMENT", rdv);
+            v.getContext().startActivity(intent);
+        });
     }
 
     @Override

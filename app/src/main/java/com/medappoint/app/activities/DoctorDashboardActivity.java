@@ -61,6 +61,12 @@ public class DoctorDashboardActivity extends AppCompatActivity {
                     mesRendezVous.clear();
                     mesRendezVous.addAll(reponse.body());
                     adaptateurRendezVous.updateAppointmentList(mesRendezVous);
+                    
+                    // Mise à jour de l'en-tête (Date du jour et nombre de patients)
+                    android.widget.TextView tvHeader = findViewById(R.id.tvPlanningHeader);
+                    String dateJour = new java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault()).format(new java.util.Date());
+                    tvHeader.setText("Planning du : " + dateJour + " (" + mesRendezVous.size() + " Patients)");
+                    
                 } else {
                     Toast.makeText(DoctorDashboardActivity.this, 
                             "Erreur de chargement.", 
