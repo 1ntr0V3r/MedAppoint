@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText champMotDePasse;
     private Button boutonConnexion;
     private TextView lienInscription;
+    private TextView btnSettings; // Bouton pour changer l'IP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         champMotDePasse = findViewById(R.id.champMotDePasse);
         boutonConnexion = findViewById(R.id.boutonConnexion);
         lienInscription = findViewById(R.id.lienInscription);
+        btnSettings = findViewById(R.id.btnSettings);
 
         // Action quand on clique sur le bouton "Se connecter"
         boutonConnexion.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +55,42 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        
+        // Configuration de l'IP Serveur
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                afficherBoiteDeDialogueServeur();
+            }
+        });
+    }
+
+    private void afficherBoiteDeDialogueServeur() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.title_server_settings));
+        builder.setMessage(getString(R.string.msg_server_settings));
+
+        final EditText input = new EditText(this);
+        input.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_URI);
+        input.setText(RetrofitClient.getBaseUrl(this));
+        builder.setView(input);
+
+        builder.setPositiveButton(getString(R.string.btn_save), new android.content.DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(android.content.DialogInterface dialog, int which) {
+                String newUrl = input.getText().toString().trim();
+                RetrofitClient.setBaseUrl(LoginActivity.this, newUrl);
+                Toast.makeText(LoginActivity.this, getString(R.string.server_ip_saved), Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton(getString(R.string.btn_cancel), new android.content.DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(android.content.DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 
     /**
@@ -84,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
         LoginRequest requeteConnexion = new LoginRequest(email, motDePasse);
 
         // Étape 4 : Appel au serveur via Retrofit
-        ApiService serviceApi = RetrofitClient.getInstance().getApiService();
+        ApiService serviceApi = RetrofitClient.getInstance(LoginActivity.this).getApiService();
         Call<User> appel = serviceApi.login(requeteConnexion);
 
         appel.enqueue(new Callback<User>() {

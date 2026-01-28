@@ -99,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
         RegisterRequest requeteInscription = new RegisterRequest(nomComplet, email, motDePasse, roleChoisi);
 
         // 4. Envoi au serveur
-        ApiService serviceApi = RetrofitClient.getInstance().getApiService();
+        ApiService serviceApi = RetrofitClient.getInstance(RegisterActivity.this).getApiService();
         Call<User> appel = serviceApi.register(requeteInscription);
 
         appel.enqueue(new Callback<User>() {

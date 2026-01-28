@@ -44,7 +44,7 @@ public class AdminDashboardActivity extends AppCompatActivity {
      * Demande au serveur la liste de tout le monde (Docteurs, Patients...)
      */
     private void chargerTousLesUtilisateurs() {
-        ApiService serviceApi = RetrofitClient.getInstance().getApiService();
+        ApiService serviceApi = RetrofitClient.getInstance(AdminDashboardActivity.this).getApiService();
         Call<List<User>> appel = serviceApi.getAllUsers();
 
         appel.enqueue(new Callback<List<User>>() {

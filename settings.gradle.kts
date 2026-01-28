@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MedAppoint"
 include(":app")
+include(":backend")

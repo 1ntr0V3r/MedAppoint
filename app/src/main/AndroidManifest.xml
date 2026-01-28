@@ -41,6 +41,9 @@
         <activity
             android:name=".activities.PatientDashboardActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.BookAppointmentActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

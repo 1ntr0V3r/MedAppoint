@@ -37,12 +37,34 @@ public class PatientDashboardActivity extends AppCompatActivity {
 
         // Chargement des données
         chargerMesRendezVous();
+
+        // Bouton d'ajout
+        com.google.android.material.floatingactionbutton.FloatingActionButton fab = findViewById(R.id.fabAddAppointment);
+        fab.setOnClickListener(v -> {
+            android.content.Intent intent = new android.content.Intent(PatientDashboardActivity.this, BookAppointmentActivity.class);
+            intent.putExtra("USER_ID", getIntent().getLongExtra("USER_ID", -1));
+            intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
+            startActivity(intent);
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        chargerMesRendezVous(); // Recharger quand on revient de l'écran d'ajout
     }
 
     private void chargerMesRendezVous() {
-        ApiService serviceApi = RetrofitClient.getInstance().getApiService();
-        // ID patient 3L en dur pour l'exemple
-        Call<List<Appointment>> appel = serviceApi.getPatientAppointments(3L);
+        ApiService serviceApi = RetrofitClient.getInstance(PatientDashboardActivity.this).getApiService();
+        
+        // Récupérer l'ID depuis la connexion
+        long userId = getIntent().getLongExtra("USER_ID", -1);
+        if (userId == -1) {
+             Toast.makeText(this, "Erreur: ID Utilisateur introuvable", Toast.LENGTH_SHORT).show();
+             return;
+        }
+
+        Call<List<Appointment>> appel = serviceApi.getPatientAppointments(userId);
 
         appel.enqueue(new Callback<List<Appointment>>() {
             @Override

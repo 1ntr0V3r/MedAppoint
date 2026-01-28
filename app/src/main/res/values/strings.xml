@@ -65,4 +65,13 @@
     <string name="dummy_status">Terminé</string>
     <string name="dummy_email">email@example.com</string>
     <string name="dummy_role">ROLE</string>
+
+    <!-- Server Settings -->
+    <string name="title_server_settings">Configuration Serveur</string>
+    <string name="msg_server_settings">Entrez l\'adresse IP de votre PC (ex: 192.168.1.15:8080)</string>
+    <string name="hint_server_ip">http://192.168.x.x:8080/</string>
+    <string name="btn_save">Enregistrer</string>
+    <string name="btn_cancel">Annuler</string>
+    <string name="server_ip_saved">Nouvelle adresse IP enregistrée !</string>
+    <string name="server_settings_label">Paramètres Serveur</string>
 </resources>

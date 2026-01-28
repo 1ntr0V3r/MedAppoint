@@ -26,5 +26,11 @@ public interface ApiService {
     
     @POST("api/auth/login")
     Call<User> login(@Body LoginRequest request);
+
+    @GET("api/patient/doctors")
+    Call<List<User>> getAllDoctors();
+
+    @POST("api/patient/book")
+    Call<Appointment> bookAppointment(@Body Appointment appointment);
 }
 

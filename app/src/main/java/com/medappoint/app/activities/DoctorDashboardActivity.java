@@ -43,10 +43,16 @@ public class DoctorDashboardActivity extends AppCompatActivity {
     }
 
     private void chargerLePlanning() {
-        // ... (Code similaire, on appelle l'API pour avoir les RDV du docteur)
-        // Note: l'ID du docteur est en dur pour l'instant (2L)
-        ApiService serviceApi = RetrofitClient.getInstance().getApiService();
-        Call<List<Appointment>> appel = serviceApi.getDoctorAppointments(2L);
+        ApiService serviceApi = RetrofitClient.getInstance(DoctorDashboardActivity.this).getApiService();
+        
+        // Récupérer l'ID depuis la connexion
+        long userId = getIntent().getLongExtra("USER_ID", -1);
+        if (userId == -1) {
+             Toast.makeText(this, "Erreur: ID Docteur introuvable", Toast.LENGTH_SHORT).show();
+             return;
+        }
+
+        Call<List<Appointment>> appel = serviceApi.getDoctorAppointments(userId);
 
         appel.enqueue(new Callback<List<Appointment>>() {
             @Override

@@ -13,4 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // Spring Data JPA génère automatiquement la requête SQL : 
     // SELECT * FROM users WHERE email = ?
     Optional<User> findByEmail(String email);
+    
+    // Pour lister les médecins
+    java.util.List<User> findByRole(String role);
 }

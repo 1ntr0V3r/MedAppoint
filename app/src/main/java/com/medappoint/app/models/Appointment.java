@@ -5,6 +5,7 @@ public class Appointment {
     private String date;
     private String time;
     private String reason;
+    private Long patientId;
     private String patientName;
     private Long doctorId;
     private String doctorName;
@@ -99,6 +100,13 @@ public class Appointment {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    public Long getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Long patientId) {
+        this.patientId = patientId;
     }
 }
 
