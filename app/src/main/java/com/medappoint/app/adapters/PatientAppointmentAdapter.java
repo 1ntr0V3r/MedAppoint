@@ -49,6 +49,10 @@ public class PatientAppointmentAdapter extends RecyclerView.Adapter<PatientAppoi
             intent.putExtra("APPOINTMENT", rdv);
             v.getContext().startActivity(intent);
         });
+        
+        // Animation
+        android.view.animation.Animation animation = android.view.animation.AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.item_slide_in);
+        holder.itemView.startAnimation(animation);
     }
 
     @Override

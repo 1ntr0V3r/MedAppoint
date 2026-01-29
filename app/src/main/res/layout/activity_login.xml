@@ -7,17 +7,17 @@
     android:background="@color/fond_ecran"
     tools:context=".activities.LoginActivity">
 
-    <TextView
-        android:id="@+id/btnSettings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="⚙️ Config IP"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="@color/admin_gris"
-        android:padding="12dp"
+    <!-- Logo -->
+    <ImageView
+        android:id="@+id/imgLogo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_logo_vector"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@color/bleu_medical"/>
 
     <!-- Titre de l'application -->
     <TextView
@@ -28,8 +28,8 @@
         android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="@color/texte_principal"
-        android:layout_marginTop="48dp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/imgLogo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

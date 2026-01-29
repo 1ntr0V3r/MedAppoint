@@ -42,95 +42,30 @@ public class BookAppointmentActivity extends AppCompatActivity {
         inputReason = findViewById(R.id.inputReason);
         btnBook = findViewById(R.id.btnBook);
 
-        // Formatage automatique pour la Date (YYYY-MM-DD)
-        inputDate.addTextChangedListener(new android.text.TextWatcher() {
-            private String current = "";
-            private String ddmmyyyy = "YYYYMMDD";
-            private java.util.Calendar cal = java.util.Calendar.getInstance();
+        // Désactiver l'édition manuelle
+        inputDate.setFocusable(false);
+        inputDate.setClickable(true);
+        inputTime.setFocusable(false);
+        inputTime.setClickable(true);
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().equals(current)) {
-                    String clean = s.toString().replaceAll("[^\\d.]|\\.", "");
-                    String cleanC = current.replaceAll("[^\\d.]|\\.", "");
-
-                    int cl = clean.length();
-                    int sel = cl;
-                    for (int i = 2; i <= cl && i < 6; i += 2) {
-                        sel++;
-                    }
-                    if (clean.equals(cleanC)) sel--;
-
-                    if (clean.length() < 8){
-                        String yyyymmdd = ddmmyyyy.substring(clean.length());
-                       clean = clean + yyyymmdd;
-                    } else {
-                       int year  = Integer.parseInt(clean.substring(0,4));
-                       int mon  = Integer.parseInt(clean.substring(4,6));
-                       int day  = Integer.parseInt(clean.substring(6,8));
-
-                       mon = mon < 1 ? 1 : mon > 12 ? 12 : mon;
-                       cal.set(java.util.Calendar.MONTH, mon-1);
-                       year = (year<1900)?1900:(year>2100)?2100:year;
-                       cal.set(java.util.Calendar.YEAR, year);
-                       
-                       day = (day > cal.getActualMaximum(java.util.Calendar.DATE))? cal.getActualMaximum(java.util.Calendar.DATE):day;
-                       clean = String.format("%02d%02d%02d",year, mon, day);
-                    }
-
-                    clean = String.format("%s-%s-%s", clean.substring(0, 4),
-                            clean.substring(4, 6),
-                            clean.substring(6, 8));
-
-                    sel = sel < 0 ? 0 : sel;
-                    current = clean;
-                    inputDate.setText(current);
-                    inputDate.setSelection(sel < current.length() ? sel : current.length());
-                }
-            }
-            @Override
-            public void afterTextChanged(android.text.Editable s) {}
+        // Date Picker
+        inputDate.setOnClickListener(v -> {
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            new android.app.DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+                // Formatting YYYY-MM-DD
+                String selectedDate = String.format(java.util.Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
+                inputDate.setText(selectedDate);
+            }, cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH)).show();
         });
-        
-        // Formatage automatique pour l'Heure (HH:MM)
-        inputTime.addTextChangedListener(new android.text.TextWatcher() {
-             private String current = "";
-             @Override
-             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-             
-             @Override
-             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                 if (!s.toString().equals(current)) {
-                     String clean = s.toString().replaceAll("[^\\d.]|\\.", "");
-                     String cleanC = current.replaceAll("[^\\d.]|\\.", "");
 
-                     int cl = clean.length();
-                     int sel = cl;
-                     for (int i = 2; i <= cl && i < 4; i += 2) {
-                         sel++;
-                     }
-                     if (clean.equals(cleanC)) sel--;
-
-                     if (clean.length() < 4){
-                        clean = clean + "0000".substring(clean.length());
-                     } else {
-                        clean = clean.substring(0,4);
-                     }
-                     
-                     clean = String.format("%s:%s", clean.substring(0, 2), clean.substring(2, 4));
-
-                     sel = sel < 0 ? 0 : sel;
-                     current = clean;
-                     inputTime.setText(current);
-                     inputTime.setSelection(sel < current.length() ? sel : current.length());
-                 }
-             }
-
-             @Override
-             public void afterTextChanged(android.text.Editable s) {}
+        // Time Picker
+        inputTime.setOnClickListener(v -> {
+             java.util.Calendar cal = java.util.Calendar.getInstance();
+             new android.app.TimePickerDialog(this, (view, hourOfDay, minute) -> {
+                 // Formatting HH:MM
+                 String selectedTime = String.format(java.util.Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                 inputTime.setText(selectedTime);
+             }, cal.get(java.util.Calendar.HOUR_OF_DAY), cal.get(java.util.Calendar.MINUTE), true).show();
         });
 
         btnBook.setOnClickListener(v -> bookAppointment());
@@ -147,6 +82,40 @@ public class BookAppointmentActivity extends AppCompatActivity {
             Toast.makeText(this, "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        // --- VALIDATION DES HORAIRES ---
+        try {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
+            java.util.Date dateObj = sdf.parse(date);
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            cal.setTime(dateObj);
+            int dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK); // Sun=1, Mon=2, ... Sat=7
+
+            if (dayOfWeek == java.util.Calendar.SUNDAY) {
+                Toast.makeText(this, "Le cabinet est fermé le Dimanche.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            int hour = Integer.parseInt(time.split(":")[0]);
+            int minute = Integer.parseInt(time.split(":")[1]);
+
+            if (dayOfWeek == java.util.Calendar.SATURDAY) {
+                // Samedi: 09:00 - 12:00
+                if (hour < 9 || hour > 12 || (hour == 12 && minute > 0)) {
+                    Toast.makeText(this, "Samedi : Ouvert de 09h à 12h uniquement.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            } else {
+                // Lun - Ven: 09:00 - 16:00
+                if (hour < 9 || hour > 16 || (hour == 16 && minute > 0)) {
+                    Toast.makeText(this, "Horaires en semaine : 09h - 16h.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // -------------------------------
 
         Appointment app = new Appointment();
         app.setDate(date);

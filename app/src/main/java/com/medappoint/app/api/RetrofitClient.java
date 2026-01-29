@@ -8,7 +8,7 @@ public class RetrofitClient {
     private static final String PREFS_NAME = "MedAppointPrefs";
     private static final String KEY_SERVER_URL = "server_url";
     // Valeur par défaut (à changer via l'app ou si nécessaire)
-    private static final String DEFAULT_URL = "http://26.10.1.190:8080/";
+    private static final String DEFAULT_URL = "http://192.168.137.1:8080/";
 
     private static RetrofitClient instance_unique = null;
     private ApiService serviceApi;

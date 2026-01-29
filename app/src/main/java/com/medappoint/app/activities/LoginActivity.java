@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText champMotDePasse;
     private Button boutonConnexion;
     private TextView lienInscription;
-    private TextView btnSettings; // Bouton pour changer l'IP
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +35,7 @@ public class LoginActivity extends AppCompatActivity {
         champMotDePasse = findViewById(R.id.champMotDePasse);
         boutonConnexion = findViewById(R.id.boutonConnexion);
         lienInscription = findViewById(R.id.lienInscription);
-        btnSettings = findViewById(R.id.btnSettings);
-
+        
         // Action quand on clique sur le bouton "Se connecter"
         boutonConnexion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,14 +51,6 @@ public class LoginActivity extends AppCompatActivity {
                 // On navigue vers la page d'inscription (Activity)
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
-            }
-        });
-        
-        // Configuration de l'IP Serveur
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                afficherBoiteDeDialogueServeur();
             }
         });
     }
