@@ -1,13 +1,11 @@
 FROM gradle:jdk17-alpine AS build
-WORKDIR /home/gradle/project
+WORKDIR /home/gradle/src
 COPY . .
-# Use the 'gradle' command installed in the image, NOT ./gradlew
-# EXCLUDE the android app module to prevent errors
-RUN gradle :backend:bootJar --no-daemon -x test
+# Force ignore the Android module if it tries to configure itself by just running the backend task directly
+# and using --no-daemon. 
+RUN gradle :backend:bootJar -x test --no-daemon
 
 FROM eclipse-temurin:17-jdk-alpine
-VOLUME /tmp
-# Path might vary depending on how copy works, but usually it ends up here
-COPY --from=build /home/gradle/project/backend/build/libs/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+COPY --from=build /home/gradle/src/backend/build/libs/*.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
