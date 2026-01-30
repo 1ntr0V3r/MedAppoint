@@ -8,7 +8,7 @@ public class RetrofitClient {
     private static final String PREFS_NAME = "MedAppointPrefs";
     private static final String KEY_SERVER_URL = "server_url";
     // Valeur par défaut (à changer via l'app ou si nécessaire)
-    private static final String DEFAULT_URL = "https://00c438c6e49681f7-105-159-22-1.serveousercontent.com/";
+    private static final String DEFAULT_URL = "https://098e5ece4e4b781f-196-70-217-107.serveousercontent.com/";
 
     private static RetrofitClient instance_unique = null;
     private ApiService serviceApi;
@@ -16,12 +16,52 @@ public class RetrofitClient {
 
     // Constructeur privé
     private RetrofitClient(String baseUrl) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
         
+        retrofit2.Retrofit.Builder builder = new retrofit2.Retrofit.Builder()
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create());
+
+        // Use Unsafe HttpClient to avoid SSL errors with Serveo/Localtunnel
+        builder.client(getUnsafeOkHttpClient());
+        
+        Retrofit retrofit = builder.build();
         serviceApi = retrofit.create(ApiService.class);
+    }
+    
+    // --- BYPASS SSL SECURITY (DEV ONLY) ---
+    private static okhttp3.OkHttpClient getUnsafeOkHttpClient() {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            final javax.net.ssl.TrustManager[] trustAllCerts = new javax.net.ssl.TrustManager[] {
+                new javax.net.ssl.X509TrustManager() {
+                    @Override
+                    public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {}
+                    @Override
+                    public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws java.security.cert.CertificateException {}
+                    @Override
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[]{}; }
+                }
+            };
+
+            // Install the all-trusting trust manager
+            final javax.net.ssl.SSLContext sslContext = javax.net.ssl.SSLContext.getInstance("SSL");
+            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+
+            // Create an ssl socket factory with our all-trusting manager
+            final javax.net.ssl.SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
+
+            okhttp3.OkHttpClient.Builder builder = new okhttp3.OkHttpClient.Builder();
+            builder.sslSocketFactory(sslSocketFactory, (javax.net.ssl.X509TrustManager)trustAllCerts[0]);
+            builder.hostnameVerifier((hostname, session) -> true);
+            
+            // Timeout settings (Serveo can be slow)
+            builder.connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS);
+            builder.readTimeout(30, java.util.concurrent.TimeUnit.SECONDS);
+
+            return builder.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Méthode pour obtenir l'instance unique (Singleton) avec Context pour charger l'URL
@@ -58,6 +98,15 @@ public class RetrofitClient {
 
     // Récupérer le service pour faire les appels
     public ApiService getApiService() {
+        // --- OFFLINE MODE FOR DEMO (PROFESSOR) ---
+        // Return the fake service instead of the real one
+        // If you want to use the real server, change this boolean to false
+        boolean useOfflineMode = false; 
+        
+        if (useOfflineMode) {
+             return new com.medappoint.app.mocks.MockApiService();
+        }
+
         return serviceApi;
     }
 }

@@ -15,43 +15,53 @@ public class AuthController {
 
     @PostMapping("/register") 
     public ResponseEntity<?> inscription(@RequestBody RegisterRequest demandeInscription) {
+        System.out.println(">>> REGISTER REQUEST: " + demandeInscription.getEmail());
         
-        // 1. Vérifier si l'email existe déjà en base
-        if (userRepository.findByEmail(demandeInscription.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest()
-                    .body(new ReponseErreur("Cet email est déjà utilisé !"));
-        }
+        try {
+            // 1. Vérifier si l'email existe déjà en base
+            if (userRepository.findByEmail(demandeInscription.getEmail()).isPresent()) {
+                System.out.println(">>> REGISTER FAILED: Email already exists - " + demandeInscription.getEmail());
+                return ResponseEntity.badRequest()
+                        .body(new ReponseErreur("Cet email est déjà utilisé ! (Server)"));
+            }
 
-        // 2. Créer le nouvel utilisateur
-        User nouvelUtilisateur = new User();
-        nouvelUtilisateur.setFullName(demandeInscription.getFullName());
-        nouvelUtilisateur.setEmail(demandeInscription.getEmail());
-        nouvelUtilisateur.setPassword(demandeInscription.getPassword()); // Attention : Pas de hashage demandé pour l'instant
-        nouvelUtilisateur.setRole(demandeInscription.getRole());
-        
-        // 3. Sauvegarder dans la base de données PostgreSQL
-        User utilisateurSauvegarde = userRepository.save(nouvelUtilisateur);
-        
-        return ResponseEntity.ok(utilisateurSauvegarde);
+            // 2. Créer le nouvel utilisateur
+            User nouvelUtilisateur = new User();
+            nouvelUtilisateur.setFullName(demandeInscription.getFullName());
+            nouvelUtilisateur.setEmail(demandeInscription.getEmail());
+            nouvelUtilisateur.setPassword(demandeInscription.getPassword()); 
+            nouvelUtilisateur.setRole(demandeInscription.getRole());
+            
+            // 3. Sauvegarder dans la base de données PostgreSQL
+            User utilisateurSauvegarde = userRepository.save(nouvelUtilisateur);
+            System.out.println(">>> REGISTER SUCCESS: User ID " + utilisateurSauvegarde.getId());
+            
+            return ResponseEntity.ok(utilisateurSauvegarde);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(">>> REGISTER ERROR: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ReponseErreur("Erreur Serveur: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/login") 
     public ResponseEntity<?> connexion(@RequestBody LoginRequest demandeConnexion) {
-        String email = demandeConnexion.getEmail();
-        String motDePasse = demandeConnexion.getPassword();
-        
-        // 1. Chercher l'utilisateur dans la base par son email
-        // .orElse(null) retourne null si l'utilisateur n'est pas trouvé
-        User utilisateur = userRepository.findByEmail(email).orElse(null);
-        
-        // 2. Vérifier si l'utilisateur existe ET si le mot de passe correspond
-        if (utilisateur != null && utilisateur.getPassword().equals(motDePasse)) {
-            // C'est bon ! On renvoie l'utilisateur (avec son ID et son Rôle)
-            return ResponseEntity.ok(utilisateur);
-        } else {
-            // Mauvais identifiants
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new ReponseErreur("Email inconnu ou mot de passe incorrect."));
+        System.out.println(">>> LOGIN REQUEST: " + demandeConnexion.getEmail());
+        try {
+            User utilisateur = userRepository.findByEmail(demandeConnexion.getEmail()).orElse(null);
+            
+            if (utilisateur != null && utilisateur.getPassword().equals(demandeConnexion.getPassword())) {
+                System.out.println(">>> LOGIN SUCCESS: " + utilisateur.getEmail() + " (" + utilisateur.getRole() + ")");
+                return ResponseEntity.ok(utilisateur);
+            } else {
+                System.out.println(">>> LOGIN FAILED: Wrong creds for " + demandeConnexion.getEmail());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(new ReponseErreur("Email inconnu ou mot de passe incorrect."));
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(new ReponseErreur("Erreur Login: " + e.getMessage()));
         }
     }
 

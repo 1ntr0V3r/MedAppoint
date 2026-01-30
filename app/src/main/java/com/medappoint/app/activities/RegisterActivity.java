@@ -119,11 +119,18 @@ public class RegisterActivity extends AppCompatActivity {
                     String errorMsg = getString(R.string.error_register);
                     try {
                         if (reponse.errorBody() != null) {
-                             // Basic attempt to read error info. Ideally parse JSON.
-                             // But server sends {"message": "Cet email est déjà utilisé !"}
                              String errContent = reponse.errorBody().string();
-                             if (errContent.contains("Cet email est déjà utilisé")) {
-                                 errorMsg = "Cet email est déjà utilisé !";
+                             // Try to parse JSON { "message": "..." }
+                             if (errContent.contains("message")) {
+                                 int start = errContent.indexOf(":") + 2;
+                                 int end = errContent.lastIndexOf("\"");
+                                 if (start < end) {
+                                     errorMsg = errContent.substring(start, end);
+                                 }
+                             } else {
+                                 // If plain text or other format, just show it
+                                 if(!errContent.isEmpty() && errContent.length() < 100)
+                                     errorMsg = errContent;
                              }
                         }
                     } catch (Exception e) {

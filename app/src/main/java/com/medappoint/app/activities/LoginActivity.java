@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText champMotDePasse;
     private Button boutonConnexion;
     private TextView lienInscription;
+    private android.widget.ImageView imgLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,11 +32,23 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Liaison avec les IDs du fichier XML
+        imgLogo = findViewById(R.id.imgLogo);
         champEmail = findViewById(R.id.champEmail);
         champMotDePasse = findViewById(R.id.champMotDePasse);
         boutonConnexion = findViewById(R.id.boutonConnexion);
         lienInscription = findViewById(R.id.lienInscription);
         
+        // Hidden Settings: Long press on logo to change server URL
+        if(imgLogo != null) {
+            imgLogo.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    afficherBoiteDeDialogueServeur();
+                    return true;
+                }
+            });
+        }
+
         // Action quand on clique sur le bouton "Se connecter"
         boutonConnexion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,9 +145,24 @@ public class LoginActivity extends AppCompatActivity {
                     
                 } else {
                     // Le serveur a refusé la connexion (mauvais mot de passe ?)
-                    Toast.makeText(LoginActivity.this, 
-                            getString(R.string.error_login_failed), 
-                            Toast.LENGTH_LONG).show();
+                    String messageErreur = getString(R.string.error_login_failed);
+                    try {
+                        if (reponse.errorBody() != null) {
+                            String errorBody = reponse.errorBody().string();
+                            // Simple parsing of {"message":"..."}
+                            if (errorBody.contains("message")) {
+                                int start = errorBody.indexOf(":") + 2;
+                                int end = errorBody.lastIndexOf("\"");
+                                if (start < end) {
+                                    messageErreur = errorBody.substring(start, end);
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    
+                    Toast.makeText(LoginActivity.this, messageErreur, Toast.LENGTH_LONG).show();
                 }
             }
 
